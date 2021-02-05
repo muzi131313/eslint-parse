@@ -1,0 +1,23 @@
+{
+  "name": "eslint-parse",
+  "version": "1.0.0",
+  "description": "eslint parse lib",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muzi131313/eslint-parse.git"
+  },
+  "keywords": [
+    "eslint",
+    "parse"
+  ],
+  "author": "liyanfeng <liyanfeng@zhibenyuan.cc>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muzi131313/eslint-parse/issues"
+  },
+  "homepage": "https://github.com/muzi131313/eslint-parse#readme"
+}
