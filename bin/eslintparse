@@ -1,0 +1,37 @@
+#! /usr/bin/env node
+
+const { Command } = require('commander');
+const EP = require('../src/index.js');
+
+const program = new Command();
+program.version('0.0.1');
+
+program
+  .option('-c, --check <type>', 'eslint check type, options[modify/all]')
+  .option('-f, --format <type>', 'eslint format type, options[vue]')
+  .option('-i, --input <type>', 'eslint input folder path', './examples')
+  .action((name, options, command) => {
+    if (options.debug) {
+      console.error('Called %s with options %o', command.name(), options);
+    }
+  });
+
+// 设置必选项
+program
+  .requiredOption('-i, --input <type>', 'eslitparse must have input folder');
+
+program.parse(process.argv);
+
+const options = program.opts();
+// eslint 检测
+if (options.check) {
+  EP.check(options.check);
+}
+
+// 没有参数时显示帮助信息
+if (!process.argv[2]) {
+    program.help()
+    console.log('未输入参数')
+}
+
+
