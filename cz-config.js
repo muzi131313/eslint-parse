@@ -13,16 +13,8 @@ module.exports = {
         { value: "update", name: "update ⬆:    第三方库升级 " }
     ],
     scopes: [
-        { name: "项目页" },
-        { name: "画布页" },
-        { name: "标注页" },
-        { name: "原型页" },
-        { name: "登录注册页" },
-        { name: "分享邀请" },
-        { name: "产品页" },
-        { name: "设置个页" },
-        { name: "配置" },
-        { name: "其他" }
+        { name: "工具" },
+        { name: "demo" },
     ],
 
     // it needs to match the value for field type. Eg.: 'fix'
