@@ -109,21 +109,26 @@ function execCommand(command) {
  * @description 读取 .eslintignore 文件
  * @created 2021年01月13日15:10:29
  */
-function readEslintIgnore() {
-  const ignorePath = path.join(__dirname, '../../../.eslintignore');
-  const fileData = fs.readFileSync(ignorePath, 'utf-8');
-  let ignores = fileData.split('\n');
-  ignores = ignores.filter((ignore) => ignore && !ignore.includes('#'));
-  ignores = ignores.map((ignore) => {
-    const firstIndex = ignore.indexOf('*');
-    const lastIndex = ignore.lastIndexOf('*');
-    if (firstIndex !== lastIndex) {
-      return ignore.substring(0, firstIndex);
-    }
-    return ignore;
-  });
-  // console.log('ignores: \n', ignores);
-  return ignores;
+function readEslintIgnore(folder) {
+  try {
+    const ignorePath = path.join(__dirname, folder, '.eslintignore');
+    const fileData = fs.readFileSync(ignorePath, 'utf-8');
+    let ignores = fileData.split('\n');
+    ignores = ignores.filter((ignore) => ignore && !ignore.includes('#'));
+    ignores = ignores.map((ignore) => {
+      const firstIndex = ignore.indexOf('*');
+      const lastIndex = ignore.lastIndexOf('*');
+      if (firstIndex !== lastIndex) {
+        return ignore.substring(0, firstIndex);
+      }
+      return ignore;
+    });
+    // console.log('ignores: \n', ignores);
+    return ignores;
+  }
+  catch (e) {
+    return [];
+  }
 }
 
 /**
@@ -143,8 +148,8 @@ function isIgonrePath(path, ignores) {
   return isIgnore;
 }
 
-function getIgnoreFiles(files) {
-  const ignores = readEslintIgnore();
+function getIgnoreFiles(files, folder) {
+  const ignores = readEslintIgnore(folder);
   const eslintFiles = files.filter((_file) => !isIgonrePath(_file, ignores));
   let eslintJSVueFiles = eslintFiles.filter((_file) => /[(\.js)|(\.vue)]{1,}$/.test(_file));
   return eslintJSVueFiles;

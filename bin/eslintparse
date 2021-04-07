@@ -2,6 +2,8 @@
 
 const { Command } = require('commander');
 const EP = require('../src/index.js');
+const path = require('path');
+const resolve = _path => path.join(__dirname, '../', _path);
 
 const program = new Command();
 program.version('0.0.1');
@@ -25,7 +27,8 @@ program.parse(process.argv);
 const options = program.opts();
 // eslint 检测
 if (options.check) {
-  EP.check(options.check);
+  const folder = resolve(options.input)
+  EP.check(options.check, folder);
 }
 
 // 没有参数时显示帮助信息

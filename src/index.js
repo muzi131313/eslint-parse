@@ -1,8 +1,10 @@
+const check = require('./check/check.js');
 module.exports = {
-  check(type) {
+  check: async function(type, folder) {
     switch (type) {
       case 'modify':
         console.log('check modify');
+        await check.eslintCheck(folder);
         break;
       case 'all':
         console.log('check all');

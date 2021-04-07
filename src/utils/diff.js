@@ -31,10 +31,11 @@ const Diff = {
       }
     }
     const dataStr = info.data;
+    console.log('dataStr: ', dataStr)
     const datas = dataStr
       .split('\n')
       .filter((item) => item)
-      .map((item) => path.join(__dirname, `${baseDir}/${item}`));
+      .map((item) => `${baseDir}/${item}`);
     // console.log('datas: ', datas);
     return datas;
   },

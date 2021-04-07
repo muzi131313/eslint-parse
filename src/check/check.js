@@ -1,17 +1,24 @@
-const { getDiffFiles } = require('./utils/diff.js');
-const { getIgnoreFiles } = require('./utils/tool.js');
+const { getDiffFiles } = require('../utils/diff.js');
+const { getIgnoreFiles } = require('../utils/tool.js');
 const { ESLint } = require('eslint');
 const eslint = new ESLint();
+const path = require('path');
 
-async function eslintCheck() {
-  const files = (await getDiffFiles('../../../')).filter((item) => item.includes('src/'));
+async function eslintCheck(folder) {
+  console.log('folder: ', folder)
+  if (!folder) {
+    throw new Error('check folder path was empty');
+  }
+  const files = (await getDiffFiles(folder)).filter((item) => item.includes('src/'));
+  // console.log('files: ', files);
   if (!files || !files.length) {
     return;
   }
 
-  let diffFileArray = getIgnoreFiles(files);
+  let diffFileArray = getIgnoreFiles(files, folder);
   let errorCount = 0;
   let warningCount = 0;
+  // console.log('diffFileArray: ', diffFileArray);
   // 执行ESLint代码检查
   const eslintResults = await eslint.lintFiles(diffFileArray);
 
@@ -59,4 +66,6 @@ async function eslintCheck() {
   }
 }
 
-eslintCheck();
+module.exports = {
+  eslintCheck
+}
