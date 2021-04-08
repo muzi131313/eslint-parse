@@ -1,2 +1,0 @@
-
-Error: Command failed: npx eslint /Users/liyanfeng/code-learn/github/front/eslint/eslint-parse/examples/vite-demo/src/shims-vue.d.ts -c .eslintrc.js --fix
