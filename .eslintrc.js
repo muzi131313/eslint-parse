@@ -7,8 +7,16 @@ module.exports = {
   },
   env: {
     es6: true,
-    browser: true,
     node: true,
   },
-  extends: 'eslint:recommended',
+  extends: [
+    'plugin:vue/vue3-recommended',
+  ],
+  parserOptions: {        // 指定ESLint可以解析JSX语法
+    "ecmaVersion": 2019,
+    "sourceType": 'module',
+    "ecmaFeatures":{
+        jsx:true
+    }
+  },
 };
