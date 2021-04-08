@@ -31,7 +31,7 @@ const Diff = {
       }
     }
     const dataStr = info.data;
-    console.log('dataStr: ', dataStr)
+    // console.log('dataStr: ', dataStr)
     const datas = dataStr
       .split('\n')
       .filter((item) => item)
