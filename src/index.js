@@ -1,4 +1,5 @@
 const check = require('./check/check.js');
+const vue = require('./parse/vue.js');
 const eslint = require('./check/eslint.js');
 const errorParse = require('./check/error.js');
 module.exports = {
@@ -21,7 +22,9 @@ module.exports = {
       console.error('check error: ', e);
     }
   },
-  format: async function(type, folder) {
+  format: async function(type, folder, {
+    formatInput = [0, 1, 2], // [script, template, style]
+  } = {}) {
     try {
       switch (type) {
         case 'modify':
@@ -31,6 +34,9 @@ module.exports = {
         case 'all':
           console.log('format all');
           eslint.formatEslint(folder);
+          break;
+        case 'vue':
+          vue.formatVue(folder, formatInput);
           break;
         default:
           console.warn('unknown format type: ', type);

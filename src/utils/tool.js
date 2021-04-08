@@ -218,10 +218,25 @@ function isShouldEslintFiles(files) {
   return shouldFiles
 }
 
+/**
+ * @name deleteDuplicateArray
+ * @param {Array} array
+ * @description 删除重复值
+ * @returns
+ * @created 2021年04月08日20:34:18
+ */
+function deleteDuplicateArray(array) {
+  if (!array) {
+    return [];
+  }
+  return [...new Set(array)]
+}
+
 tools.readFiles = readFiles;
 tools.dirExists = dirExists;
 tools.execCommand = execCommand;
 tools.getIgnoreFiles = getIgnoreFiles;
 tools.isShouldEslintFiles = isShouldEslintFiles;
+tools.deleteDuplicateArray = deleteDuplicateArray;
 
 module.exports = tools;

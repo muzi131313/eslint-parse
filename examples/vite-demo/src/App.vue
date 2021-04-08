@@ -1,3 +1,4 @@
+
 <template>
   <img
     alt="Vue logo"
@@ -5,7 +6,6 @@
   >
   <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
 </template>
-
 <script lang="ts">
 import { defineComponent } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
@@ -18,7 +18,6 @@ export default defineComponent({
   }
 })
 </script>
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -29,3 +28,4 @@ export default defineComponent({
   margin-top: 60px;
 }
 </style>
+

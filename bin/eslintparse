@@ -4,6 +4,14 @@ const { Command } = require('commander');
 const EP = require('../src/index.js');
 const path = require('path');
 const resolve = _path => path.join(__dirname, '../', _path);
+const parseInput = string => {
+  try {
+    return string ? JSON.parse(string) : string;
+  }
+  catch (e) {
+    console.error('parse fi param failed, error:\n', e);
+  }
+}
 
 const program = new Command();
 program.version('0.0.1');
@@ -11,6 +19,7 @@ program.version('0.0.1');
 program
   .option('-c, --check <type>', 'eslint check type, options[modify/all]')
   .option('-f, --format <type>', 'eslint format type, options[vue]')
+  .option('-fi, --formatInput <type>', 'eslint format input type, options[vue]')
   .option('-i, --input <type>', 'eslint input folder path', './examples')
   .action((name, options, command) => {
     if (options.debug) {
@@ -34,7 +43,11 @@ if (options.check) {
 // 格式化【一般用于增量变更检查】
 if (options.format) {
   const folder = resolve(options.input)
-  EP.format(options.format, folder);
+  const formatInputStr = options.formatInput;
+  const formatInput = parseInput(formatInputStr);
+  EP.format(options.format, folder, {
+    formatInput
+  });
 }
 
 // 没有参数时显示帮助信息

@@ -2,29 +2,7 @@ const fs = require('fs')
 const getTemplates = require('./vue/template.js')
 const getStyles = require('./vue/style.js')
 const getScripts = require('./vue/script.js')
-const {readFiles} = require('../utils/tool.js')
-
-/**
- * @name readFiles
- * @description 读取指定目录下的所有文件
- * @param {*} baseDirectory 目录(相对src同级目录执行此node脚本)
- * @param {*} _files 存储所有的文件绝对路径位置
- * @created 2021年01月12日14:17:36
- */
-// function readFiles(baseDirectory = '../../src', _files = []) {
-//   const _dir = path.join(__dirname, baseDirectory);
-//   const files = fs.readdirSync(_dir);
-//   files.forEach((_file) => {
-//     const _path = `${_dir}/${_file}`;
-//     const data = fs.statSync(_path);
-//     if (data.isFile()) {
-//       _files.push(_path);
-//     } else if (data.isDirectory()) {
-//       readFiles(`${baseDirectory}/${_file}`, _files);
-//     }
-//   });
-//   return _files;
-// }
+const { readFiles, deleteDuplicateArray } = require('../utils/tool.js')
 
 /**
  * @name getSingleVueInfo
@@ -61,27 +39,43 @@ function getSingleVueInfo(fileDataStr) {
  * @param {String} fileDataStr 文件字符串内容
  * @created 2021年01月12日15:37:16
  */
-function formatSingleVue(fileDataStr) {
+function formatSingleVue(fileDataStr, formatInput) {
   const infos = getSingleVueInfo(fileDataStr)
   // console.log('infos: ', infos);
   let singleVueStr = ''
   const scripts = infos.scripts
   const templates = infos.templates
   const styles = infos.styles
+  const dataObj = {
+    0: scripts,
+    1: templates,
+    2: styles,
+  }
   singleVueStr += infos.lastStr
   singleVueStr += '\n'
-  scripts.forEach((script) => {
-    singleVueStr += script
-    singleVueStr += '\n'
+
+  formatInput.forEach(formatKey => {
+    if (!dataObj[formatKey]) {
+      throw new Error(`key ${formatKey} not found`);
+    }
+    dataObj[formatKey].forEach(formateValue => {
+      singleVueStr += formateValue
+      singleVueStr += '\n'
+    })
   })
-  templates.forEach((template) => {
-    singleVueStr += template
-    singleVueStr += '\n'
-  })
-  styles.forEach((style) => {
-    singleVueStr += style
-    singleVueStr += '\n'
-  })
+
+  // scripts.forEach((script) => {
+  //   singleVueStr += script
+  //   singleVueStr += '\n'
+  // })
+  // templates.forEach((template) => {
+  //   singleVueStr += template
+  //   singleVueStr += '\n'
+  // })
+  // styles.forEach((style) => {
+  //   singleVueStr += style
+  //   singleVueStr += '\n'
+  // })
   singleVueStr += '\n'
   return singleVueStr
 }
@@ -92,12 +86,12 @@ function formatSingleVue(fileDataStr) {
  * @param {String} vueFile vue 文件路径
  * @created 2021年01月12日16:32:19
  */
-function singleOneTest(vueFile) {
+function singleOneTest(vueFile, formatInput) {
   // 2.读取文件内容
   const fileData = fs.readFileSync(vueFile, 'utf-8')
   // console.log('fileData: ', fileData);
   // 3.格式化vue文件
-  const formatStr = formatSingleVue(fileData)
+  const formatStr = formatSingleVue(fileData, formatInput)
   // console.log('formatStr: ', formatStr);
   // 4.重新vue文件内容
   fs.writeFileSync(vueFile, formatStr, 'utf-8')
@@ -107,8 +101,14 @@ function singleOneTest(vueFile) {
  * @name formatVue
  * @description 格式化 vue 文件
  */
-function formatVue() {
-  const files = readFiles()
+function formatVue(folder, formatInput) {
+  formatInput = deleteDuplicateArray(formatInput);
+
+  if (formatInput.length < 3) {
+    throw new Error('fi params length less than 3');
+  }
+
+  const files = readFiles(folder)
   // 1.查询 vue 文件
   const vueFiles = files.filter((_file) => /\.vue$/.test(_file))
   // console.log('vueFiles: ', vueFiles);
@@ -116,8 +116,10 @@ function formatVue() {
   // singleOneTest(vueFiles[0]);
   // all: 格式化所有 vue 文件
   vueFiles.forEach((vueFile) => {
-    singleOneTest(vueFile)
+    singleOneTest(vueFile, formatInput)
   })
 }
 
-formatVue()
+module.exports = {
+  formatVue
+}
