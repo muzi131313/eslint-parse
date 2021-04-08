@@ -18,7 +18,8 @@ function readFiles(baseDirectory = '../src', _files = []) {
   files.forEach((_file) => {
     const _path = `${_dir}/${_file}`;
     const data = fs.statSync(_path);
-    if (_path.includes('node_modules')) {
+    if (_path.includes('node_modules')
+      || _path.includes('.git')) {
       return;
     }
     if (data.isFile()) {

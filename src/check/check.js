@@ -4,7 +4,8 @@ const { ESLint } = require('eslint');
 const eslint = new ESLint();
 const path = require('path');
 
-async function eslintCheck(folder) {
+async function eslintCheck(folder, isAll) {
+  // TODO: 全部校验的逻辑
   console.log('folder: ', folder)
   if (!folder) {
     throw new Error('check folder path was empty');

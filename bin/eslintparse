@@ -25,10 +25,16 @@ program
 program.parse(process.argv);
 
 const options = program.opts();
-// eslint 检测
+// eslint 检测 -> 输出检查结果
 if (options.check) {
   const folder = resolve(options.input)
   EP.check(options.check, folder);
+}
+
+// 格式化【一般用于增量变更检查】
+if (options.format) {
+  const folder = resolve(options.input)
+  EP.format(options.format, folder);
 }
 
 // 没有参数时显示帮助信息
