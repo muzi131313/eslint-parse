@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { readFiles, dirExists, execCommand, getIgnoreFiles } = require('./utils/tool.js');
-const { getDiffFiles } = require('./utils/diff.js');
-const parseCommand = require('./command.js');
+const { readFiles, dirExists, execCommand, getIgnoreFiles } = require('../utils/tool.js');
+const { getDiffFiles } = require('../utils/diff.js');
 
 /**
  * @name getCommand
@@ -16,7 +15,7 @@ function getCommand(_path) {
 
 // 按照队列格式化
 // eslint-disable-next-line
-async function formatQueque(queues, onceLength, execResults = [], execErrors = []) {
+async function formatQueue(queues, onceLength, execResults = [], execErrors = []) {
   if (!queues.length) {
     return {
       results: execResults,
@@ -24,7 +23,7 @@ async function formatQueque(queues, onceLength, execResults = [], execErrors = [
     };
   }
   if (queues.length < onceLength) {
-    return await formatQueque(queues, queues.length, execResults, execErrors);
+    return await formatQueue(queues, queues.length, execResults, execErrors);
   } else {
     const execPromises = queues.splice(0, onceLength).map(async (_path) => await execCommand(getCommand(_path)));
     const infos = await Promise.all(execPromises);
@@ -38,7 +37,7 @@ async function formatQueque(queues, onceLength, execResults = [], execErrors = [
         execErrors.push(info.data);
       }
     });
-    return await formatQueque(queues, onceLength, execResults, execErrors);
+    return await formatQueue(queues, onceLength, execResults, execErrors);
   }
 }
 
@@ -77,10 +76,11 @@ async function writeArrayToFile(_path, arrays) {
  * @description eslint 格式化 js,vue 文件
  * @created 2021年01月13日15:22:43
  */
-async function formatEslint(options) {
-  const files = options && options.modify
-    ? (await getDiffFiles('../../../')).filter(item => item.includes('src/'))
-    : readFiles();
+async function formatEslint(folder, isModify) {
+  const files = isModify
+    ? (await getDiffFiles(folder)).filter(item => item.includes('src/'))
+    : readFiles(folder);
+  console.log('files: ', files);
   if (!files || !files.length) {
     return;
   }
@@ -94,7 +94,7 @@ async function formatEslint(options) {
   // console.log('eslintJSVueFiles: ', eslintJSVueFiles);
   // === test code end ===
 
-  const { results, errors } = await formatQueque(eslintJSVueFiles, 30);
+  const { results, errors } = await formatQueue(eslintJSVueFiles, 30);
 
   await writeArrayToFile('../../.tmp/logs/eslint-res.txt', results);
   await writeArrayToFile('../../.tmp/logs/eslint-error.txt', errors);
@@ -102,5 +102,6 @@ async function formatEslint(options) {
   console.log('eslint format done~');
 }
 
-const options = parseCommand();
-formatEslint(options);
+module.exports = {
+  formatEslint
+}

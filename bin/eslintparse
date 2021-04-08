@@ -20,7 +20,7 @@ program
 
 // 设置必选项
 program
-  .requiredOption('-i, --input <type>', 'eslitparse must have input folder');
+  .requiredOption('-i, --input <type>', 'eslintparse must have input folder');
 
 program.parse(process.argv);
 

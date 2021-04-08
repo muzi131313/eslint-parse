@@ -11,12 +11,16 @@ const tools = {};
  * @param {*} _files 存储所有的文件绝对路径位置
  * @created 2021年01月12日14:17:36
  */
-function readFiles(baseDirectory = '../../../src', _files = []) {
-  const _dir = path.join(__dirname, baseDirectory);
+function readFiles(baseDirectory = '../src', _files = []) {
+  // const _dir = path.join(__dirname, baseDirectory);
+  const _dir = baseDirectory;
   const files = fs.readdirSync(_dir);
   files.forEach((_file) => {
     const _path = `${_dir}/${_file}`;
     const data = fs.statSync(_path);
+    if (_path.includes('node_modules')) {
+      return;
+    }
     if (data.isFile()) {
       _files.push(_path);
     } else if (data.isDirectory()) {

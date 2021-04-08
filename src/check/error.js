@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { dirExists } = require('./utils/tool.js');
+const { dirExists } = require('../utils/tool.js');
 
 // 获取 log 绝对路径
 function _getLogPath(baseDirectory, fileName) {
@@ -133,4 +133,6 @@ async function parseError() {
   fs.writeFileSync(absolutePath, _errorTxt, 'utf8');
 }
 
-parseError();
+module.exports = {
+  parseError
+}

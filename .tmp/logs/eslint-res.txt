@@ -1,0 +1,21 @@
+
+
+/Users/liyanfeng/code-learn/github/front/eslint/eslint-parse/examples/vite-demo/.eslintignore
+  0:0  warning  File ignored by default.  Use a negated ignore pattern (like "--ignore-pattern '!<relative/path/to/filename>'") to override
+
+✖ 1 problem (0 errors, 1 warning)
+
+
+
+/Users/liyanfeng/code-learn/github/front/eslint/eslint-parse/examples/vite-demo/.gitignore
+  0:0  warning  File ignored by default.  Use a negated ignore pattern (like "--ignore-pattern '!<relative/path/to/filename>'") to override
+
+✖ 1 problem (0 errors, 1 warning)
+
+
+
+/Users/liyanfeng/code-learn/github/front/eslint/eslint-parse/examples/vite-demo/src/shims-vue.d.ts
+  1:9  error  Parsing error: Unexpected token module
+
+✖ 1 problem (1 error, 0 warnings)
+
