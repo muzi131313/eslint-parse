@@ -1,6 +1,6 @@
 {
-  "name": "eslint-parse",
-  "version": "1.0.0",
+  "name": "eslintparse",
+  "version": "0.0.1",
   "description": "eslint parse lib",
   "main": "index.js",
   "bin": {
@@ -17,7 +17,7 @@
     "eslint",
     "parse"
   ],
-  "author": "liyanfeng <liyanfeng@zhibenyuan.cc>",
+  "author": "muzi131313 <muzi131313@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/muzi131313/eslint-parse/issues"
