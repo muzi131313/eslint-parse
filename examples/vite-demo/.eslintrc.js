@@ -1,4 +1,7 @@
 module.exports = {
+  parserOptions: {
+    parser: "@typescript-eslint/parser"
+  },
   rules: {
     "no-unused-vars": 0,
   },
@@ -11,16 +14,5 @@ module.exports = {
   },
   extends: [
     'plugin:vue/vue3-recommended',
-    'plugin:@typescript-eslint/recommended'
   ],
-  plugins: [
-    '@typescript-eslint',
-  ],
-  parserOptions: {        // 指定ESLint可以解析JSX语法
-    "ecmaVersion": 2019,
-    "sourceType": 'module',
-    "ecmaFeatures":{
-        jsx:true
-    }
-  },
 };
