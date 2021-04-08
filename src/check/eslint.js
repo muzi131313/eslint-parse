@@ -1,6 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const { readFiles, dirExists, execCommand, getIgnoreFiles } = require('../utils/tool.js');
+const {
+  readFiles,
+  dirExists,
+  execCommand,
+  getIgnoreFiles,
+  isShouldEslintFiles,
+} = require('../utils/tool.js');
 const { getDiffFiles } = require('../utils/diff.js');
 
 /**
@@ -78,13 +84,14 @@ async function writeArrayToFile(_path, arrays) {
  */
 async function formatEslint(folder, isModify) {
   const files = isModify
-    ? (await getDiffFiles(folder)).filter(item => item.includes('src/'))
-    : readFiles(folder);
+    ? isShouldEslintFiles(await getDiffFiles(folder))
+    : isShouldEslintFiles(readFiles(folder));
   console.log('files: ', files);
   if (!files || !files.length) {
     return;
   }
-  let eslintJSVueFiles = getIgnoreFiles(files);
+  let eslintJSVueFiles = getIgnoreFiles(files, folder);
+  console.log('[debug] eslintJSVueFiles: ', eslintJSVueFiles)
 
   // === test code start ===
   // 队列测试代码

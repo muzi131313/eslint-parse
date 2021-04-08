@@ -4,7 +4,7 @@ const { ESLint } = require('eslint');
 const eslint = new ESLint();
 const path = require('path');
 
-async function eslintCheck(folder, isAll) {
+async function eslintCheck(folder, isModify) {
   // TODO: 全部校验的逻辑
   console.log('folder: ', folder)
   if (!folder) {
@@ -19,7 +19,7 @@ async function eslintCheck(folder, isAll) {
   let diffFileArray = getIgnoreFiles(files, folder);
   let errorCount = 0;
   let warningCount = 0;
-  // console.log('diffFileArray: ', diffFileArray);
+  console.log('diffFileArray: ', diffFileArray);
   // 执行ESLint代码检查
   const eslintResults = await eslint.lintFiles(diffFileArray);
 

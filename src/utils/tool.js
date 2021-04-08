@@ -5,6 +5,19 @@ const { exec } = require('child_process');
 const tools = {};
 
 /**
+ * @name isNeedFilter
+ * @param {String} _path 路径
+ * @description 是否有必要过滤
+ * @returns
+ * @created 2021年04月08日18:19:06
+ */
+function isNeedFilter(_path) {
+  const _need = _path.includes('node_modules')
+    || _path.includes('.git');
+  return _need;
+}
+
+/**
  * @name readFiles
  * @description 读取指定目录下的所有文件
  * @param {*} baseDirectory 目录(相对src同级目录执行此node脚本)
@@ -18,8 +31,7 @@ function readFiles(baseDirectory = '../src', _files = []) {
   files.forEach((_file) => {
     const _path = `${_dir}/${_file}`;
     const data = fs.statSync(_path);
-    if (_path.includes('node_modules')
-      || _path.includes('.git')) {
+    if (isNeedFilter(_path)) {
       return;
     }
     if (data.isFile()) {
@@ -110,59 +122,106 @@ function execCommand(command) {
 }
 
 /**
+ * @name getIgnorePath
+ * @param {String} folder 要校验的路径
+ * @description 获取 .eslintignore 的路径
+ * @returns
+ * @created 2021年04月08日17:16:57
+ */
+function getIgnorePath(folder = '') {
+  const _dirname = path.join(__dirname, '../../');
+  if (folder.endsWith('src')) {
+    folder = folder.replace('/src', '');
+  }
+  const isIncludeFolder = folder && folder.includes(_dirname);
+  const ignorePath = isIncludeFolder
+    ? `${folder}/.eslintignore`
+    : path.join(__dirname, folder, '.eslintignore');
+  return ignorePath;
+}
+
+/**
  * @name readEslintIgnore
  * @description 读取 .eslintignore 文件
  * @created 2021年01月13日15:10:29
  */
-function readEslintIgnore(folder) {
+function readEslintIgnore(folder = '') {
   try {
-    const ignorePath = path.join(__dirname, folder, '.eslintignore');
+    const ignorePath = getIgnorePath(folder);
     const fileData = fs.readFileSync(ignorePath, 'utf-8');
+    // console.log('[debug] fileData: \n', fileData);
     let ignores = fileData.split('\n');
     ignores = ignores.filter((ignore) => ignore && !ignore.includes('#'));
     ignores = ignores.map((ignore) => {
       const firstIndex = ignore.indexOf('*');
       const lastIndex = ignore.lastIndexOf('*');
+      const ignoreLength = ignore.length
       if (firstIndex !== lastIndex) {
+        // 通配符在结尾的
+        if (ignoreLength > lastIndex) {
+          return ignore.substring(lastIndex + 1, ignoreLength);
+        }
+        // 通配符在前面的
         return ignore.substring(0, firstIndex);
       }
       return ignore;
     });
-    // console.log('ignores: \n', ignores);
+    console.log('ignores: \n', ignores);
     return ignores;
   }
   catch (e) {
+    console.error('readEslintIgnore error: \n', e);
     return [];
   }
 }
 
 /**
- * @name isIgonrePath
+ * @name isIgnorePath
  * @description 是否是要忽略的路径
  * @param {String} path 要判断的路径
  * @param {Array} ignores 忽略规则数组
  * @created 2021年01月13日15:11:18
  */
-function isIgonrePath(path, ignores) {
+function isIgnorePath(path, ignores) {
   let isIgnore = false;
   ignores.some((ignore) => {
-    const ignoreReg = new RegExp(ignore);
-    isIgnore = ignoreReg.test(path);
-    return isIgnore;
+    try {
+      const ignoreReg = new RegExp(ignore);
+      isIgnore = ignoreReg.test(path);
+      return isIgnore;
+    }
+    catch (e) {
+      isIgnore = path.includes(ignore);
+      return isIgnore;
+    }
   });
   return isIgnore;
 }
 
 function getIgnoreFiles(files, folder) {
   const ignores = readEslintIgnore(folder);
-  const eslintFiles = files.filter((_file) => !isIgonrePath(_file, ignores));
-  let eslintJSVueFiles = eslintFiles.filter((_file) => /[(\.js)|(\.vue)]{1,}$/.test(_file));
+  const eslintFiles = files.filter((_file) => !isIgnorePath(_file, ignores));
+  let eslintJSVueFiles = isShouldEslintFiles(eslintFiles);
   return eslintJSVueFiles;
+}
+
+
+/**
+ * @name isShouldEslintFiles
+ * @param {Array} files 待处理的文件
+ * @description 需要进行 eslint 格式化的文件列表
+ * @returns
+ * @created 2021年04月08日18:23:09
+ */
+function isShouldEslintFiles(files) {
+  const shouldFiles = files.filter((_file) => /\.(js|vue|jsx|ts)$/.test(_file));
+  return shouldFiles
 }
 
 tools.readFiles = readFiles;
 tools.dirExists = dirExists;
 tools.execCommand = execCommand;
 tools.getIgnoreFiles = getIgnoreFiles;
+tools.isShouldEslintFiles = isShouldEslintFiles;
 
 module.exports = tools;
