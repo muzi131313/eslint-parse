@@ -19,6 +19,9 @@ async function eslintCheck(folder, isModify) {
   let diffFileArray = getIgnoreFiles(files, folder);
   let errorCount = 0;
   let warningCount = 0;
+  // 过滤不存在的文件
+  diffFileArray = await checkFileExists(diffFileArray);
+  // log
   console.log('diffFileArray: ', diffFileArray);
   // 执行ESLint代码检查
   const eslintResults = await eslint.lintFiles(diffFileArray);

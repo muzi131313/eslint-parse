@@ -198,6 +198,13 @@ function isIgnorePath(path, ignores) {
   return isIgnore;
 }
 
+/**
+ * @name getIgnoreFiles
+ * @param {Array} files
+ * @description 获取不校验的文件列表
+ * @returns
+ * @created 2021年01月15日17:02:53
+ */
 function getIgnoreFiles(files, folder) {
   const ignores = readEslintIgnore(folder);
   const eslintFiles = files.filter((_file) => !isIgnorePath(_file, ignores));
@@ -232,11 +239,34 @@ function deleteDuplicateArray(array) {
   return [...new Set(array)]
 }
 
+/**
+ * @name checkFileExists
+ * @param {Array} files
+ * @description 要检测是否存在的文件列表
+ * @created 2021年04月15日17:17:06
+ * @returns 存在的文件列表
+ */
+ async function checkFileExists(files) {
+  const fileCallbacks = files.map(_file => new Promise((resolve, reject) => {
+    getStat(_file)
+      .then(rs => {
+        resolve({ path: _file, exist: rs });
+      })
+      .catch(reject)
+  }))
+  let checkFiles = await Promise.all(fileCallbacks)
+  checkFiles = checkFiles
+    .filter(checkFile => checkFile.exist)
+    .map(checkFile => checkFile.path);
+  return checkFiles;
+}
+
 tools.readFiles = readFiles;
 tools.dirExists = dirExists;
 tools.execCommand = execCommand;
 tools.getIgnoreFiles = getIgnoreFiles;
 tools.isShouldEslintFiles = isShouldEslintFiles;
 tools.deleteDuplicateArray = deleteDuplicateArray;
+tools.checkFileExists = checkFileExists;
 
 module.exports = tools;
