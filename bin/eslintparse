@@ -3,7 +3,7 @@
 const { Command } = require('commander');
 const EP = require('../src/index.js');
 const path = require('path');
-const resolve = _path => path.join(__dirname, '../', _path);
+const resolve = _path => path.join(process.cwd(), './', _path);
 const parseInput = string => {
   try {
     return string ? JSON.parse(string) : string;
