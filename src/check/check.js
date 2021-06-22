@@ -1,18 +1,27 @@
 const { getDiffFiles } = require('../utils/diff.js');
-const { getIgnoreFiles } = require('../utils/tool.js');
+const { getIgnoreFiles, readFiles, checkFileExists } = require('../utils/tool.js');
 const { ESLint } = require('eslint');
 const eslint = new ESLint();
 const path = require('path');
+const { log } = require('../utils/log.js');
 
-async function eslintCheck(folder, isModify) {
+async function eslintCheck(folder, isModify = true) {
   // TODO: 全部校验的逻辑
-  console.log('folder: ', folder)
+  log('folder: ', folder)
   if (!folder) {
     throw new Error('check folder path was empty');
   }
-  const files = (await getDiffFiles(folder)).filter((item) => item.includes('src/'));
-  // console.log('files: ', files);
+  let files
+  log('isModify: ', isModify)
+  if (isModify) {
+    files = (await getDiffFiles(folder)).filter((item) => item.includes('src/'));
+  }
+  else {
+    files = readFiles('src/');
+  }
+  log('files: ', files);
   if (!files || !files.length) {
+    log('no check, found 0 file')
     return;
   }
 

@@ -2,6 +2,8 @@ const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
 
+const { log } = require('./log.js');
+
 const tools = {};
 
 /**
@@ -28,6 +30,7 @@ function readFiles(baseDirectory = '../src', _files = []) {
   // const _dir = path.join(__dirname, baseDirectory);
   const _dir = baseDirectory;
   const files = fs.readdirSync(_dir);
+  log('readFiles, files: ', files);
   files.forEach((_file) => {
     const _path = `${_dir}/${_file}`;
     const data = fs.statSync(_path);

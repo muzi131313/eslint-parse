@@ -17,9 +17,13 @@ const program = new Command();
 program.version('0.0.1');
 
 program
+  // eslint check
   .option('-c, --check <type>', 'eslint check type, options[modify/all]')
+  // 格式化类型, modify/all/vue
   .option('-f, --format <type>', 'eslint format type, options[vue]')
+  // if format is vue, use fi to define format order, default was [0,1,2] <=> [script, template, style]
   .option('-fi, --formatInput <type>', 'eslint format input type, options[vue]')
+  // format project folder
   .option('-i, --input <type>', 'eslint input folder path', './examples')
   .action((name, options, command) => {
     if (options.debug) {

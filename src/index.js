@@ -11,7 +11,7 @@ module.exports = {
           break;
         case 'all':
           // TODO: 待开发
-          await check.eslintCheck(folder);
+          await check.eslintCheck(folder, false);
           break;
         default:
           console.warn('unknown check type: ', type);

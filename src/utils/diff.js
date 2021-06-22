@@ -32,12 +32,12 @@ const Diff = {
     }
     const dataStr = info.data;
     // console.log('dataStr: ', dataStr)
-    const datas = dataStr
+    const diffFiles = dataStr
       .split('\n')
       .filter((item) => item)
       .map((item) => `${baseDir}/${item}`);
-    // console.log('datas: ', datas);
-    return datas;
+    // console.log('diffFiles: ', diffFiles);
+    return diffFiles;
   },
   // 获取当前分支
   getCurrentBranch: async function() {
@@ -61,13 +61,13 @@ const Diff = {
         console.warn('get father branch failed, data was null');
         return null;
       }
-      const datas = data.split('\n');
-      const createLogIndex = datas.findIndex(item => item.includes('Created from HEAD'))
+      const branchData = data.split('\n');
+      const createLogIndex = branchData.findIndex(item => item.includes('Created from HEAD'))
       if (createLogIndex === -1) {
         console.warn('get father branch failed, could not find created head log');
         return null;
       }
-      const beforeCreateLog = datas[createLogIndex + 1];
+      const beforeCreateLog = branchData[createLogIndex + 1];
       if (!beforeCreateLog) {
         console.warn('get father branch failed, before create log was null');
         return null;
