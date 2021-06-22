@@ -17,7 +17,7 @@ async function eslintCheck(folder, isModify = true) {
     files = (await getDiffFiles(folder)).filter((item) => item.includes('src/'));
   }
   else {
-    files = readFiles('src/');
+    files = readFiles('src');
   }
   log('files: ', files);
   if (!files || !files.length) {
@@ -31,14 +31,14 @@ async function eslintCheck(folder, isModify = true) {
   // 过滤不存在的文件
   diffFileArray = await checkFileExists(diffFileArray);
   // log
-  console.log('diffFileArray: ', diffFileArray);
+  log('diffFileArray: ', diffFileArray);
   // 执行ESLint代码检查
   const eslintResults = await eslint.lintFiles(diffFileArray);
 
   // 3. Format the results.
   const formatter = await eslint.loadFormatter('stylish');
   const resultText = formatter.format(eslintResults);
-  console.log(resultText);
+  log('format result: ', resultText);
 
   // 对检查结果进行处理，提取报错数和警告数
   eslintResults.forEach((result) => {
