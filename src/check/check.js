@@ -1,5 +1,10 @@
 const { getDiffFiles } = require('../utils/diff.js');
-const { getIgnoreFiles, readFiles, checkFileExists } = require('../utils/tool.js');
+const {
+  getIgnoreFiles,
+  readFiles,
+  checkFileExists,
+  dirExists
+} = require('../utils/tool.js');
 const { ESLint } = require('eslint');
 const eslint = new ESLint();
 const path = require('path');
@@ -10,6 +15,11 @@ async function eslintCheck(folder, isModify = true) {
   log('folder: ', folder)
   if (!folder) {
     throw new Error('check folder path was empty');
+  }
+  const isFolderExist = await dirExists(folder, true);
+  if (!isFolderExist) {
+    log(`check folder[${folder}] not exist`)
+    return;
   }
   let files
   log('isModify: ', isModify)

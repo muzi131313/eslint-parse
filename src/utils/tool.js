@@ -82,24 +82,33 @@ function mkdir(dir) {
  * 路径是否存在，不存在则创建
  * @param {string} dir 路径
  */
-async function dirExists(dir) {
-  let isExists = await getStat(dir);
-  // 如果该路径且不是文件，返回true
-  if (isExists && isExists.isDirectory()) {
-    return true;
-  } else if (isExists) {
-    // 如果该路径存在但是文件，返回false
+async function dirExists(dir, isCheck = false) {
+  try {
+    let isExists = await getStat(dir);
+    // 如果该路径且不是文件，返回true
+    if (isExists && isExists.isDirectory()) {
+      return true;
+    } else if (isExists) {
+      // 如果该路径存在但是文件，返回false
+      return false;
+    }
+    if (isCheck) {
+      return false;
+    }
+    // 如果该路径不存在
+    let tempDir = path.parse(dir).dir; // 拿到上级路径
+    // 递归判断，如果上级目录也不存在，则会代码会在此处继续循环执行，直到目录存在
+    let status = await dirExists(tempDir);
+    let mkdirStatus;
+    if (status) {
+      mkdirStatus = await mkdir(dir);
+    }
+    return mkdirStatus;
+  }
+  catch (e) {
+    log(e);
     return false;
   }
-  // 如果该路径不存在
-  let tempDir = path.parse(dir).dir; // 拿到上级路径
-  // 递归判断，如果上级目录也不存在，则会代码会在此处继续循环执行，直到目录存在
-  let status = await dirExists(tempDir);
-  let mkdirStatus;
-  if (status) {
-    mkdirStatus = await mkdir(dir);
-  }
-  return mkdirStatus;
 }
 
 /**
@@ -264,6 +273,36 @@ function deleteDuplicateArray(array) {
   return checkFiles;
 }
 
+/**
+ * @name writeArrayToFile
+ * @description 写数组到文件中
+ * @param {String} path 路径
+ * @param {Array} arrays 要写的数组数据
+ * @created 2021年01月13日16:52:32
+ */
+ async function writeArrayToFile(_path, arrays) {
+  const _folder = getFolder(_path);
+  // 写之前先校验路径
+  await dirExists(_folder);
+
+  let txt = '';
+  arrays.forEach((_txt) => {
+    if (_txt) {
+      txt += '\n';
+      txt += _txt;
+    }
+  });
+  const absolutePath = path.join(__dirname, _path);
+  fs.writeFileSync(absolutePath, txt, 'utf8');
+}
+
+// 获取文件夹
+function getFolder(_path) {
+  const operateIndex = _path.lastIndexOf('/');
+  const _folder = _path.substring(0, operateIndex + 1);
+  return path.join(__dirname, _folder);
+}
+
 tools.readFiles = readFiles;
 tools.dirExists = dirExists;
 tools.execCommand = execCommand;
@@ -271,5 +310,7 @@ tools.getIgnoreFiles = getIgnoreFiles;
 tools.isShouldEslintFiles = isShouldEslintFiles;
 tools.deleteDuplicateArray = deleteDuplicateArray;
 tools.checkFileExists = checkFileExists;
+tools.writeArrayToFile = writeArrayToFile;
+tools.getFolder = getFolder;
 
 module.exports = tools;

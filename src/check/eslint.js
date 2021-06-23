@@ -6,8 +6,10 @@ const {
   execCommand,
   getIgnoreFiles,
   isShouldEslintFiles,
+  writeArrayToFile,
 } = require('../utils/tool.js');
 const { getDiffFiles } = require('../utils/diff.js');
+const { log } = require('../utils/log.js');
 
 /**
  * @name getCommand
@@ -47,58 +49,34 @@ async function formatQueue(queues, onceLength, execResults = [], execErrors = []
   }
 }
 
-// 获取文件夹
-function getFolder(_path) {
-  const operateIndex = _path.lastIndexOf('/');
-  const _folder = _path.substring(0, operateIndex + 1);
-  return path.join(__dirname, _folder);
-}
-
-/**
- * @name writeArrayToFile
- * @description 写数组到文件中
- * @param {String} path 路径
- * @param {Array} arrays 要写的数组数据
- * @created 2021年01月13日16:52:32
- */
-async function writeArrayToFile(_path, arrays) {
-  const _folder = getFolder(_path);
-  // 写之前先校验路径
-  await dirExists(_folder);
-
-  let txt = '';
-  arrays.forEach((_txt) => {
-    if (_txt) {
-      txt += '\n';
-      txt += _txt;
-    }
-  });
-  const absolutePath = path.join(__dirname, _path);
-  fs.writeFileSync(absolutePath, txt, 'utf8');
-}
-
 /**
  * @name formatEslint
  * @description eslint 格式化 js,vue 文件
  * @created 2021年01月13日15:22:43
  */
 async function formatEslint(folder, isModify) {
+  const isFolderExist = await dirExists(folder, true);
+  if (!isFolderExist) {
+    log(`format folder[${folder}] not exist`)
+    return;
+  }
   const files = isModify
     ? isShouldEslintFiles(await getDiffFiles(folder))
     : isShouldEslintFiles(readFiles(folder));
-  console.log('files: ', files);
   if (!files || !files.length) {
+    log('no file format');
     return;
   }
+  log('files: ', files);
   let eslintJSVueFiles = getIgnoreFiles(files, folder);
-  console.log('[debug] eslintJSVueFiles: ', eslintJSVueFiles)
+  log('[debug] eslintJSVueFiles: ', eslintJSVueFiles)
 
   // === test code start ===
   // 队列测试代码
   // eslintJSVueFiles = eslintJSVueFiles.splice(10, 15);
   // 单个文件测试
   // eslintJSVueFiles = [eslintJSVueFiles[1]];
-  // console.log('eslintJSVueFiles: ', eslintJSVueFiles);
+  // log('eslintJSVueFiles: ', eslintJSVueFiles);
   // === test code end ===
 
   const { results, errors } = await formatQueue(eslintJSVueFiles, 30);
@@ -106,7 +84,7 @@ async function formatEslint(folder, isModify) {
   await writeArrayToFile('../../.tmp/logs/eslint-res.txt', results);
   await writeArrayToFile('../../.tmp/logs/eslint-error.txt', errors);
 
-  console.log('eslint format done~');
+  log('eslint format done~');
 }
 
 module.exports = {
