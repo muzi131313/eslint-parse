@@ -85,6 +85,7 @@ function mkdir(dir) {
 async function createDirNotExist(dir, isCheck = false) {
   try {
     let isExists = await getStat(dir);
+    log('[create-dir] isExists: ', isExists, )
     // 如果该路径且不是文件，返回true
     if (isExists && isExists.isDirectory()) {
       return true;
@@ -92,11 +93,13 @@ async function createDirNotExist(dir, isCheck = false) {
       // 如果该路径存在但是文件，返回false
       return false;
     }
+    // 是否只检查路径存在与否
     if (isCheck) {
       return false;
     }
     // 如果该路径不存在
     let tempDir = path.parse(dir).dir; // 拿到上级路径
+    log('[create-dir] tempDir: ', tempDir)
     // 递归判断，如果上级目录也不存在，则会代码会在此处继续循环执行，直到目录存在
     let status = await createDirNotExist(tempDir);
     let mkdirStatus;
@@ -282,6 +285,7 @@ function deleteDuplicateArray(array) {
  */
  async function writeArrayToFile(_path, arrays) {
   const _folder = getFolder(_path);
+  log('[write-array-to-file] folder: ', _folder);
   // 写之前先校验路径
   await createDirNotExist(_folder);
 
@@ -292,15 +296,31 @@ function deleteDuplicateArray(array) {
       txt += _txt;
     }
   });
-  const absolutePath = path.join(__dirname, _path);
+  const absolutePath = _path;
+  log('[write-array-to-file] absolutePath: ', absolutePath);
   fs.writeFileSync(absolutePath, txt, 'utf8');
+}
+
+// 获取路径下的文件名
+function getFile(_path) {
+  if (!_path) {
+    return '';
+  }
+  const operateIndex = _path.lastIndexOf('/');
+  const _file = _path.substring(operateIndex + 1, _path.length);
+  return _file;
 }
 
 // 获取文件夹
 function getFolder(_path) {
   const operateIndex = _path.lastIndexOf('/');
   const _folder = _path.substring(0, operateIndex + 1);
-  return path.join(__dirname, _folder);
+  return _folder;
+}
+
+// 获取临时文件夹路径
+function getTempFilePath(folder, fileName) {
+  return path.join(folder, `./.temp/logs/${fileName}`)
 }
 
 tools.readFiles = readFiles;
@@ -312,5 +332,7 @@ tools.deleteDuplicateArray = deleteDuplicateArray;
 tools.checkFileExists = checkFileExists;
 tools.writeArrayToFile = writeArrayToFile;
 tools.getFolder = getFolder;
+tools.getFile = getFile;
+tools.getTempFilePath = getTempFilePath;
 
 module.exports = tools;

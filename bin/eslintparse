@@ -44,6 +44,8 @@ if (options.check) {
   EP.check(options.check, folder);
 }
 
+// TODO: parseError
+
 // 格式化【一般用于增量变更检查】
 if (options.format) {
   const folder = resolve(options.input)

@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const {
   readFiles,
   createDirNotExist,
@@ -7,6 +5,7 @@ const {
   getIgnoreFiles,
   isShouldEslintFiles,
   writeArrayToFile,
+  getTempFilePath,
 } = require('../utils/tool.js');
 const { getDiffFiles } = require('../utils/diff.js');
 const { log } = require('../utils/log.js');
@@ -81,8 +80,11 @@ async function formatEslint(folder, isModify) {
 
   const { results, errors } = await formatQueue(eslintJSVueFiles, 30);
 
-  await writeArrayToFile('../../.tmp/logs/eslint-res.txt', results);
-  await writeArrayToFile('../../.tmp/logs/eslint-error.txt', errors);
+  const tempResPath = getTempFilePath(folder, 'eslint-res.txt');
+  const tempErrorPath = getTempFilePath(folder, 'eslint-error.txt')
+  log('[debug] tempResPath: ', tempResPath)
+  await writeArrayToFile(tempResPath, results);
+  await writeArrayToFile(tempErrorPath, errors);
 
   log('eslint format done~');
 }
