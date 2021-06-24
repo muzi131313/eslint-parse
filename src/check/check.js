@@ -3,7 +3,7 @@ const {
   getIgnoreFiles,
   readFiles,
   checkFileExists,
-  dirExists
+  createDirNotExist
 } = require('../utils/tool.js');
 const { ESLint } = require('eslint');
 const eslint = new ESLint();
@@ -16,7 +16,7 @@ async function eslintCheck(folder, isModify = true) {
   if (!folder) {
     throw new Error('check folder path was empty');
   }
-  const isFolderExist = await dirExists(folder, true);
+  const isFolderExist = await createDirNotExist(folder, true);
   if (!isFolderExist) {
     log(`check folder[${folder}] not exist`)
     return;

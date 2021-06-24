@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const {
   readFiles,
-  dirExists,
+  createDirNotExist,
   execCommand,
   getIgnoreFiles,
   isShouldEslintFiles,
@@ -55,7 +55,7 @@ async function formatQueue(queues, onceLength, execResults = [], execErrors = []
  * @created 2021年01月13日15:22:43
  */
 async function formatEslint(folder, isModify) {
-  const isFolderExist = await dirExists(folder, true);
+  const isFolderExist = await createDirNotExist(folder, true);
   if (!isFolderExist) {
     log(`format folder[${folder}] not exist`)
     return;

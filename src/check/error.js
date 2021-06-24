@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { dirExists } = require('../utils/tool.js');
+const { createDirNotExist } = require('../utils/tool.js');
 
 // 获取 log 绝对路径
 function _getLogPath(baseDirectory, fileName) {
@@ -128,7 +128,7 @@ async function parseError() {
   const _path = '../../.tmp/logs/eslint-parse.txt';
   const _folder = getFolder(_path);
   // 写之前先校验路径
-  await dirExists(_folder);
+  await createDirNotExist(_folder);
   const absolutePath = path.join(__dirname, _path);
   fs.writeFileSync(absolutePath, _errorTxt, 'utf8');
 }

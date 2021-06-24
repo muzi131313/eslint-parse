@@ -82,7 +82,7 @@ function mkdir(dir) {
  * 路径是否存在，不存在则创建
  * @param {string} dir 路径
  */
-async function dirExists(dir, isCheck = false) {
+async function createDirNotExist(dir, isCheck = false) {
   try {
     let isExists = await getStat(dir);
     // 如果该路径且不是文件，返回true
@@ -98,7 +98,7 @@ async function dirExists(dir, isCheck = false) {
     // 如果该路径不存在
     let tempDir = path.parse(dir).dir; // 拿到上级路径
     // 递归判断，如果上级目录也不存在，则会代码会在此处继续循环执行，直到目录存在
-    let status = await dirExists(tempDir);
+    let status = await createDirNotExist(tempDir);
     let mkdirStatus;
     if (status) {
       mkdirStatus = await mkdir(dir);
@@ -283,7 +283,7 @@ function deleteDuplicateArray(array) {
  async function writeArrayToFile(_path, arrays) {
   const _folder = getFolder(_path);
   // 写之前先校验路径
-  await dirExists(_folder);
+  await createDirNotExist(_folder);
 
   let txt = '';
   arrays.forEach((_txt) => {
@@ -304,7 +304,7 @@ function getFolder(_path) {
 }
 
 tools.readFiles = readFiles;
-tools.dirExists = dirExists;
+tools.createDirNotExist = createDirNotExist;
 tools.execCommand = execCommand;
 tools.getIgnoreFiles = getIgnoreFiles;
 tools.isShouldEslintFiles = isShouldEslintFiles;
