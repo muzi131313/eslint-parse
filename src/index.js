@@ -10,7 +10,6 @@ module.exports = {
           await check.eslintCheck(folder, true);
           break;
         case 'all':
-          // TODO: 待开发
           await check.eslintCheck(folder, false);
           break;
         default:
