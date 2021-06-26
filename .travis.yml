@@ -28,8 +28,8 @@ jobs:
       # doc: https://docs.travis-ci.com/user/conditions-v1
       if: tag IS present
       # 构建
-      before_deploy:
-        - npm run build
+      # before_deploy:
+      #   - npm run build
       # 发布到npm
       deploy:
         provider: npm
