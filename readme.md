@@ -1,5 +1,9 @@
 # Eslint-parse
 
+## Install
+- global: `yarn add eslint-parse -g` or `npm install eslint-parse -g`
+- local in project: `yarn add eslint-parse -D` or `npm install eslint-parse -g`
+
 ## eslintparse: eslint 辅助工具
 - `eslintparse -f all`: 格式化全部文件
 - `eslintparse -f modify`: 格式化增量文件
