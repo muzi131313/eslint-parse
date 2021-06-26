@@ -1,7 +1,7 @@
 const check = require('./check/check.js');
 const vue = require('./parse/vue.js');
 const eslint = require('./check/eslint.js');
-const errorParse = require('./check/error.js');
+const parse = require('./check/parse.js');
 module.exports = {
   check: async function(type, folder) {
     try {
@@ -46,5 +46,8 @@ module.exports = {
     catch (e) {
       console.error('format error: ', e);
     }
+  },
+  parse: async function(folder) {
+    parse.parseError(folder)
   }
 };

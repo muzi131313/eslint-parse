@@ -25,6 +25,8 @@ program
   .option('-fi, --formatInput <type>', 'eslint format input type, options[vue]')
   // format project folder
   .option('-i, --input <type>', 'eslint input folder path', './examples')
+  // parse eslint result
+  .option('-p --parse', 'eslint parse eslint result')
   .action((name, options, command) => {
     if (options.debug) {
       console.error('Called %s with options %o', command.name(), options);
@@ -38,17 +40,21 @@ program
 program.parse(process.argv);
 
 const options = program.opts();
+// get the folder
+const folder = resolve(options.input) || './'
+
 // eslint 检测 -> 输出检查结果
 if (options.check) {
-  const folder = resolve(options.input)
   EP.check(options.check, folder);
 }
 
-// TODO: parseError
+// parseError
+if (options.parse) {
+  EP.parse(folder)
+}
 
 // 格式化【一般用于增量变更检查】
 if (options.format) {
-  const folder = resolve(options.input)
   const formatInputStr = options.formatInput;
   const formatInput = parseInput(formatInputStr);
   EP.format(options.format, folder, {

@@ -15,6 +15,7 @@
 - `eslintparse -i ./examples/vite-demo`: 指定格式化项目路径(必选项)
 - `eslintparse -i ./examples/vite-demo -c modify`: 校验 vite 示例 demo
 - `eslintparse -i ./examples/vite-demo -c all`: 校验全部 vite 示例 demo
+- `eslintparse -p -i ./examples/vite-demo`: 解析校验的结果
 
 ## TODO
 - 优化格式化队列

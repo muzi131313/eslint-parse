@@ -1,16 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const { createDirNotExist, getTempFilePath } = require('../utils/tool.js');
-
-// 获取 log 绝对路径
-function _getLogPath(baseDirectory, fileName) {
-  const _dir = path.join(__dirname, baseDirectory, fileName);
-  return _dir;
-}
+const { createDirNotExist, getTempFilePath, getFolder } = require('../utils/tool.js');
+const { log } = require('../utils/log.js');
 
 // 获取 error 生成内容: eslint-res.txt
-function getErrorText() {
-  const _resPath = _getLogPath('../../.tmp/logs', 'eslint-res.txt');
+function getErrorText(folder) {
+  const _resPath = getTempFilePath(folder, 'eslint-res.txt');
   const _resData = fs.readFileSync(_resPath, 'utf8');
   return _resData;
 }
@@ -88,19 +83,12 @@ function getErrorInfo(_resData) {
   };
 }
 
-// 获取文件夹
-function getFolder(_path) {
-  const operateIndex = _path.lastIndexOf('/');
-  const _folder = _path.substring(0, operateIndex + 1);
-  return path.join(__dirname, _folder);
-}
-
-async function parseError() {
+async function parseError(folder) {
   var _errorTxt = '';
-  const _resData = getErrorText();
-  // console.log('_resData: ', _resData);
+  const _resData = getErrorText(folder);
+  log('[parse] _resData: ', _resData);
   const _resInfo = getErrorInfo(_resData);
-  // console.log('_resInfo: ', _resInfo);
+  log('[parse] _resInfo: ', _resInfo);
   const errorNum = _resInfo.error;
   const warnNum = _resInfo.warn;
   const _info = _resInfo.info;
@@ -126,8 +114,10 @@ async function parseError() {
   });
 
   const tempParsePath = getTempFilePath(folder, 'eslint-parse.txt')
+  const tempParseFolder = getFolder(tempParsePath);
+  log('[parse] temp path: ', tempParsePath);
   // 写之前先校验路径
-  await createDirNotExist(tempParsePath);
+  await createDirNotExist(tempParseFolder);
   fs.writeFileSync(tempParsePath, _errorTxt, 'utf8');
 }
 

@@ -85,7 +85,7 @@ function mkdir(dir) {
 async function createDirNotExist(dir, isCheck = false) {
   try {
     let isExists = await getStat(dir);
-    log('[create-dir] isExists: ', isExists, )
+    // log('[create-dir] isExists: ', isExists, )
     // 如果该路径且不是文件，返回true
     if (isExists && isExists.isDirectory()) {
       return true;
