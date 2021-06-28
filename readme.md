@@ -22,5 +22,5 @@
 - `eslintparse -p -i ./examples/vite-demo`: 解析校验的结果
 
 ## TODO
-- [ ] 优化格式化队列
 - [ ] 移动分析内容 .temp 目录优先到 node_modules/.temp 目录
+- [x] 优化格式化队列 [2021.6.28]
