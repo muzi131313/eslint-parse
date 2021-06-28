@@ -49,11 +49,11 @@ async function formatQueue(queues, onceLength, execResults = [], execErrors = []
 }
 
 /**
- * @name formatEslint
+ * @name eslint
  * @description eslint 格式化 js,vue 文件
  * @created 2021年01月13日15:22:43
  */
-async function formatEslint(folder, isModify) {
+async function eslint(folder, isModify) {
   const isFolderExist = await createDirNotExist(folder, true);
   if (!isFolderExist) {
     log(`format folder[${folder}] not exist`)
@@ -90,5 +90,5 @@ async function formatEslint(folder, isModify) {
 }
 
 module.exports = {
-  formatEslint
+  eslint
 }

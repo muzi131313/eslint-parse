@@ -1,6 +1,6 @@
 const check = require('./check/check.js');
 const vue = require('./parse/vue.js');
-const eslint = require('./check/eslint.js');
+const format = require('./check/format.js');
 const parse = require('./check/parse.js');
 module.exports = {
   check: async function(type, folder) {
@@ -28,11 +28,11 @@ module.exports = {
       switch (type) {
         case 'modify':
           console.log('format modify');
-          eslint.formatEslint(folder, true);
+          format.eslint(folder, true);
           break;
         case 'all':
           console.log('format all');
-          eslint.formatEslint(folder);
+          format.eslint(folder);
           break;
         case 'vue':
           vue.formatVue(folder, formatInput);
