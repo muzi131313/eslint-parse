@@ -22,30 +22,53 @@ function getCommand(_path) {
 
 // 按照队列格式化
 // eslint-disable-next-line
-async function formatQueue(queues, onceLength, execResults = [], execErrors = []) {
-  if (!queues.length) {
-    return {
-      results: execResults,
-      errors: execErrors,
-    };
+async function formatQueue(onceLength, queues) {
+  const execResults = [];
+  const execErrors = [];
+  const executes = [];
+  const handleInfo = info => {
+    // handle result
+    if (info.err) {
+      execErrors.push(info.err);
+    }
+    if (info.done) {
+      execResults.push(info.data);
+    }
+    else {
+      execErrors.push(info.data);
+    }
   }
   if (queues.length < onceLength) {
-    return await formatQueue(queues, queues.length, execResults, execErrors);
-  } else {
-    const execPromises = queues.splice(0, onceLength).map(async (_path) => await execCommand(getCommand(_path)));
-    const infos = await Promise.all(execPromises);
-    infos.forEach((info) => {
-      if (info.err) {
-        execErrors.push(info.err);
-      }
-      if (info.done) {
-        execResults.push(info.data);
-      } else {
-        execErrors.push(info.data);
-      }
-    });
-    return await formatQueue(queues, onceLength, execResults, execErrors);
+    const infos = await Promise.all(queues.map(_path => execCommand(getCommand(_path))));
+    infos.forEach(handleInfo)
   }
+  else {
+    for (let i = 0; i < queues.length; i++) {
+      const _path = queues[i];
+      const promise = execCommand(getCommand(_path));
+      const delExecute = () => {
+        // del the resolved/reject promise
+        executes.splice(executes.indexOf(execute), 1)
+      }
+      const execute = promise
+        .then(info => {
+          handleInfo(info);
+          delExecute();
+        })
+        .catch(err => {
+          execErrors.push(err)
+          delExecute();
+        })
+      executes.push(execute);
+      if (executes.length >= onceLength) {
+        await Promise.race(executes);
+      }
+    }
+  }
+  return {
+    results: execResults,
+    errors: execErrors,
+  };
 }
 
 /**
@@ -78,7 +101,7 @@ async function eslint(folder, isModify) {
   // log('eslintJSVueFiles: ', eslintJSVueFiles);
   // === test code end ===
 
-  const { results, errors } = await formatQueue(eslintJSVueFiles, 30);
+  const { results, errors } = await formatQueue(10, eslintJSVueFiles);
 
   const tempResPath = getTempFilePath(folder, 'eslint-res.txt');
   const tempErrorPath = getTempFilePath(folder, 'eslint-error.txt')
