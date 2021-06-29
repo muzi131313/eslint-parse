@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
 
-const { log } = require('./log.js');
+const { log, error } = require('./log.js');
 
 const tools = {};
 
@@ -30,16 +30,16 @@ function readFiles(baseDirectory = '../src', _files = []) {
   // const _dir = path.join(__dirname, baseDirectory);
   const _dir = baseDirectory;
   const files = fs.readdirSync(_dir);
-  log('readFiles, files: ', files);
+  log('[read-files], files: ', files);
   files.forEach((_file) => {
     const _path = `${_dir}/${_file}`;
-    const data = fs.statSync(_path);
+    const pathState = getStat(_path, true);
     if (isNeedFilter(_path)) {
       return;
     }
-    if (data.isFile()) {
+    if (pathState.isFile()) {
       _files.push(_path);
-    } else if (data.isDirectory()) {
+    } else if (pathState.isDirectory()) {
       readFiles(`${baseDirectory}/${_file}`, _files);
     }
   });
@@ -50,7 +50,10 @@ function readFiles(baseDirectory = '../src', _files = []) {
  * 读取路径信息
  * @param {string} path 路径
  */
-function getStat(path) {
+function getStat(path, isSync) {
+  if (isSync) {
+    return fs.statSync(path)
+  }
   return new Promise((resolve, reject) => {
     fs.stat(path, (err, stats) => {
       if (err) {
@@ -66,7 +69,17 @@ function getStat(path) {
  * 创建路径
  * @param {string} dir 路径
  */
-function mkdir(dir) {
+function mkdir(dir, isSync) {
+  if (isSync) {
+    try {
+      fs.mkdirSync(dir);
+      return true;
+    }
+    catch (e) {
+      error('[mkdir] error: ', e)
+      return false;
+    }
+  }
   return new Promise((resolve, reject) => {
     fs.mkdir(dir, (err) => {
       if (err) {
@@ -84,12 +97,12 @@ function mkdir(dir) {
  */
 async function createDirNotExist(dir, isCheck = false) {
   try {
-    let isExists = await getStat(dir);
-    // log('[create-dir] isExists: ', isExists, )
+    let dirState = await getStat(dir);
+    // log('[create-dir] dirState: ', dirState, )
     // 如果该路径且不是文件，返回true
-    if (isExists && isExists.isDirectory()) {
+    if (dirState && dirState.isDirectory()) {
       return true;
-    } else if (isExists) {
+    } else if (dirState) {
       // 如果该路径存在但是文件，返回false
       return false;
     }
@@ -160,9 +173,14 @@ function getIgnorePath(folder = '') {
  * @description 读取 .eslintignore 文件
  * @created 2021年01月13日15:10:29
  */
-function readEslintIgnore(folder = '') {
+async function readEslintIgnore(folder = '') {
   try {
     const ignorePath = getIgnorePath(folder);
+    let pathStat = await getStat(ignorePath);
+    // not exist .gitignore file
+    if (!pathStat) {
+      return [];
+    }
     const fileData = fs.readFileSync(ignorePath, 'utf-8');
     // console.log('[debug] fileData: \n', fileData);
     let ignores = fileData.split('\n');
@@ -185,7 +203,7 @@ function readEslintIgnore(folder = '') {
     return ignores;
   }
   catch (e) {
-    console.error('readEslintIgnore error: \n', e);
+    error('[readEslintIgnore] error: \n', e);
     return [];
   }
 }
@@ -220,8 +238,8 @@ function isIgnorePath(path, ignores) {
  * @returns
  * @created 2021年01月15日17:02:53
  */
-function getIgnoreFiles(files, folder) {
-  const ignores = readEslintIgnore(folder);
+async function getIgnoreFiles(files, folder) {
+  const ignores = await readEslintIgnore(folder);
   const eslintFiles = files.filter((_file) => !isIgnorePath(_file, ignores));
   let eslintJSVueFiles = isShouldEslintFiles(eslintFiles);
   return eslintJSVueFiles;
@@ -320,7 +338,16 @@ function getFolder(_path) {
 
 // 获取临时文件夹路径
 function getTempFilePath(folder, fileName) {
-  return path.join(folder, `./.temp/logs/${fileName}`)
+  let nodeModulesPath = path.join(folder, `./node_modules`)
+  const nodeModulesPathExist = getStat(nodeModulesPath, true)
+  if (!nodeModulesPathExist) {
+    const mkdirResult = mkdir(nodeModulesPath, true);
+    // create node_modules folder failed, use folder
+    if (!mkdirResult) {
+      nodeModulesPath = folder;
+    }
+  }
+  return path.join(nodeModulesPath, `./.temp/logs/${fileName}`)
 }
 
 tools.readFiles = readFiles;

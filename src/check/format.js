@@ -90,7 +90,7 @@ async function eslint(folder, isModify) {
     return;
   }
   log('files: ', files);
-  let eslintJSVueFiles = getIgnoreFiles(files, folder);
+  let eslintJSVueFiles = await getIgnoreFiles(files, folder);
   log('[debug] eslintJSVueFiles: ', eslintJSVueFiles)
 
   // === test code start ===

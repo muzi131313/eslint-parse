@@ -6,6 +6,11 @@ const log = function log() {
   }
 }
 
+const error = function error() {
+  console.error.apply(console, arguments);
+}
+
 module.exports = {
-  log
+  log,
+  error
 }

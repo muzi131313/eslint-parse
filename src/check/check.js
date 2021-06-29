@@ -35,7 +35,7 @@ async function eslintCheck(folder, isModify = true) {
     return;
   }
 
-  let diffFileArray = getIgnoreFiles(files, folder);
+  let diffFileArray = await getIgnoreFiles(files, folder);
   let errorCount = 0;
   let warningCount = 0;
   // 过滤不存在的文件
