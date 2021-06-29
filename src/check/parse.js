@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { createDirNotExist, getTempFilePath, getFolder } = require('../utils/tool.js');
-const { log } = require('../utils/log.js');
+const { log, info } = require('../utils/log.js');
 
 // 获取 error 生成内容: eslint-res.txt
 function getErrorText(folder) {
@@ -12,12 +12,12 @@ function getErrorText(folder) {
 
 // 解析当前行
 function parseLine(str) {
-  const info = str
+  const lineInfo = str
     .split(/[ ]{2,}/)
     .filter((item) => item)
     .map((item) => item.trim());
-  //   console.log('info: ', info);
-  return info;
+  log('[parse] lineInfo: ', lineInfo);
+  return lineInfo;
 }
 
 // 解析当前行的信息: [ 总数量, error数量, warn数量 ]
@@ -45,9 +45,9 @@ function getErrorInfo(_resData) {
       splitItem.splice(0, 1);
     }
 
-    //   console.log('splitItem: ', splitItem)
+    log('[parse] splitItem: ', splitItem)
     const location = splitItem.splice(0, 1);
-    // console.log('location: ', location);
+    log('[parse] location: ', location);
     splitItem.forEach((_item) => {
       const _itemInfo = parseLine(_item);
       // 添加位置
@@ -62,7 +62,6 @@ function getErrorInfo(_resData) {
       } else {
         notHandlers.push(_itemInfo);
       }
-      // console.log('_itemInfo: ', _itemInfo);
     });
     // 统计信息: error num/warn num
     const nextItem = splitArray[index + 1];
@@ -71,8 +70,8 @@ function getErrorInfo(_resData) {
       errorNum += Number(lineInfo[1]);
       warnNum += Number(lineInfo[2]);
     }
-    //   console.log('item: ', item);
-    // console.log('lineInfo: ', lineInfo);
+    log('[parse] item: ', item);
+    log('[parse] lineInfo: ', lineInfo);
     return false;
   });
   return {
@@ -119,6 +118,7 @@ async function parseError(folder) {
   // 写之前先校验路径
   await createDirNotExist(tempParseFolder);
   fs.writeFileSync(tempParsePath, _errorTxt, 'utf8');
+  info('[parse] done');
 }
 
 module.exports = {

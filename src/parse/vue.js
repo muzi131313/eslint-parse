@@ -3,6 +3,7 @@ const getTemplates = require('./vue/template.js')
 const getStyles = require('./vue/style.js')
 const getScripts = require('./vue/script.js')
 const { readFiles, deleteDuplicateArray } = require('../utils/tool.js')
+const { log, info } = require('../utils/log.js')
 
 /**
  * @name getSingleVueInfo
@@ -41,7 +42,7 @@ function getSingleVueInfo(fileDataStr) {
  */
 function formatSingleVue(fileDataStr, formatInput) {
   const infos = getSingleVueInfo(fileDataStr)
-  // console.log('infos: ', infos);
+  log('[vue] infos: ', infos)
   let singleVueStr = ''
   const scripts = infos.scripts
   const templates = infos.templates
@@ -89,10 +90,10 @@ function formatSingleVue(fileDataStr, formatInput) {
 function singleOneTest(vueFile, formatInput) {
   // 2.读取文件内容
   const fileData = fs.readFileSync(vueFile, 'utf-8')
-  // console.log('fileData: ', fileData);
+  log('[vue] fileData: ', fileData)
   // 3.格式化vue文件
   const formatStr = formatSingleVue(fileData, formatInput)
-  // console.log('formatStr: ', formatStr);
+  log('[vue] formatStr: ', formatStr)
   // 4.重新vue文件内容
   fs.writeFileSync(vueFile, formatStr, 'utf-8')
 }
@@ -111,13 +112,14 @@ function formatVue(folder, formatInput) {
   const files = readFiles(folder)
   // 1.查询 vue 文件
   const vueFiles = files.filter((_file) => /\.vue$/.test(_file))
-  // console.log('vueFiles: ', vueFiles);
+  log('[vue] vueFiles: ', vueFiles)
   // test: 单个文件测试
   // singleOneTest(vueFiles[0]);
   // all: 格式化所有 vue 文件
   vueFiles.forEach((vueFile) => {
     singleOneTest(vueFile, formatInput)
   })
+  info('[vue] format done')
 }
 
 module.exports = {

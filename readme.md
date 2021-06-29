@@ -20,6 +20,7 @@
 - `eslintparse -i ./examples/vite-demo -c modify`: 校验 vite 示例 demo
 - `eslintparse -i ./examples/vite-demo -c all`: 校验全部 vite 示例 demo
 - `eslintparse -p -i ./examples/vite-demo`: 解析校验的结果
+- `eslintparse -p -i ./examples/vite-demo -d`: 解析校验的结果 [debug mode]
 
 ## TODO
 - [x] 移动分析内容 .temp 目录优先到 node_modules/.temp 目录 [2021.6.29]

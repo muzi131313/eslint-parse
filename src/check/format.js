@@ -8,7 +8,7 @@ const {
   getTempFilePath,
 } = require('../utils/tool.js');
 const { getDiffFiles } = require('../utils/diff.js');
-const { log } = require('../utils/log.js');
+const { log, info } = require('../utils/log.js');
 
 /**
  * @name getCommand
@@ -86,7 +86,7 @@ async function eslint(folder, isModify) {
     ? isShouldEslintFiles(await getDiffFiles(folder))
     : isShouldEslintFiles(readFiles(folder));
   if (!files || !files.length) {
-    log('no file format');
+    info('[format] no file format');
     return;
   }
   log('files: ', files);
@@ -105,11 +105,11 @@ async function eslint(folder, isModify) {
 
   const tempResPath = getTempFilePath(folder, 'eslint-res.txt');
   const tempErrorPath = getTempFilePath(folder, 'eslint-error.txt')
-  log('[debug] tempResPath: ', tempResPath)
+  log('[format] tempResPath: ', tempResPath)
   await writeArrayToFile(tempResPath, results);
   await writeArrayToFile(tempErrorPath, errors);
 
-  log('eslint format done~');
+  info('[format] eslint format done')
 }
 
 module.exports = {

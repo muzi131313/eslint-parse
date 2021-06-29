@@ -1,5 +1,6 @@
 const path = require('path');
 const { execCommand } = require('./tool.js');
+const { log } = require('./log.js');
 
 const diffCommand = 'git diff';
 const diffOption = '--name-only';
@@ -31,12 +32,12 @@ const Diff = {
       }
     }
     const dataStr = info.data;
-    // console.log('dataStr: ', dataStr)
+    log('[diff] dataStr: ', dataStr)
     const diffFiles = dataStr
       .split('\n')
       .filter((item) => item)
       .map((item) => `${baseDir}/${item}`);
-    // console.log('diffFiles: ', diffFiles);
+    log('[diff] diffFiles: ', diffFiles);
     return diffFiles;
   },
   // 获取当前分支

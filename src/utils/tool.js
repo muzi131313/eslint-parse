@@ -182,7 +182,7 @@ async function readEslintIgnore(folder = '') {
       return [];
     }
     const fileData = fs.readFileSync(ignorePath, 'utf-8');
-    // console.log('[debug] fileData: \n', fileData);
+    // log('[debug] fileData: \n', fileData);
     let ignores = fileData.split('\n');
     ignores = ignores.filter((ignore) => ignore && !ignore.includes('#'));
     ignores = ignores.map((ignore) => {
@@ -199,7 +199,7 @@ async function readEslintIgnore(folder = '') {
       }
       return ignore;
     });
-    console.log('ignores: \n', ignores);
+    log('ignores: \n', ignores);
     return ignores;
   }
   catch (e) {

@@ -2,6 +2,7 @@ const check = require('./check/check.js');
 const vue = require('./parse/vue.js');
 const format = require('./check/format.js');
 const parse = require('./check/parse.js');
+const { log, error } = require('./utils/log.js');
 module.exports = {
   check: async function(type, folder) {
     try {
@@ -27,11 +28,11 @@ module.exports = {
     try {
       switch (type) {
         case 'modify':
-          console.log('format modify');
+          log('[format] modify');
           format.eslint(folder, true);
           break;
         case 'all':
-          console.log('format all');
+          log('[format] all');
           format.eslint(folder);
           break;
         case 'vue':
@@ -43,7 +44,7 @@ module.exports = {
       }
     }
     catch (e) {
-      console.error('format error: ', e);
+      error('format error: ', e);
     }
   },
   parse: async function(folder) {

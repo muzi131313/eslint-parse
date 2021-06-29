@@ -1,16 +1,19 @@
-const LOG_DEBUG = true;
+const log = {};
 
-const log = function log() {
-  if (LOG_DEBUG) {
+log.debug = false;
+
+log.log = function log() {
+  if (log.debug) {
     console.log.apply(console, arguments);
   }
 }
 
-const error = function error() {
+log.error = function error() {
   console.error.apply(console, arguments);
 }
 
-module.exports = {
-  log,
-  error
+log.info = function info() {
+  console.info.apply(console, arguments);
 }
+
+module.exports = log;

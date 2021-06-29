@@ -1,8 +1,9 @@
 #! /usr/bin/env node
 
 const { Command } = require('commander');
-const EP = require('../src/index.js');
 const path = require('path');
+const EP = require('../src/index.js');
+const log = require('../src/utils/log.js');
 const resolve = _path => path.join(process.cwd(), './', _path);
 const parseInput = string => {
   try {
@@ -27,6 +28,8 @@ program
   .option('-i, --input <type>', 'eslint input folder path', './examples')
   // parse eslint result
   .option('-p --parse', 'eslint parse eslint result')
+  // debug eslintparse
+  .option('-d --debug', 'eslint parse debug mode')
   .action((name, options, command) => {
     if (options.debug) {
       console.error('Called %s with options %o', command.name(), options);
@@ -40,6 +43,11 @@ program
 program.parse(process.argv);
 
 const options = program.opts();
+
+const debug = options.debug || false;
+// console.log('[debug] debug: ', debug)
+log.debug = debug;
+
 // get the folder
 const folder = resolve(options.input) || './'
 
