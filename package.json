@@ -1,6 +1,6 @@
 {
   "name": "eslintparse",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "eslint parse lib",
   "main": "index.js",
   "bin": {
