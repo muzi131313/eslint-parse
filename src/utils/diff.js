@@ -15,15 +15,15 @@ const Diff = {
   // 获取已提交到本地未 push 的 diff 文件列表
   getDiffFiles: async function(baseDir) {
     const branch = await Diff.getCurrentBranch();
-    const command = Diff.generateDiffCommand(branch);
-    const info = await execCommand(command);
+    let command = Diff.generateDiffCommand(branch);
+    let info = await execCommand(command);
     if (info.err) {
       // throw new Error(info.err);
       const errorStr = info.err.toString()
       if (errorStr.includes('unknown revision')) {
-        console.error(info.err);
+        // console.error(info.err);
         const fatherBranch = await Diff.getFatherBranch(branch);
-        const command = Diff.generateDiffFatherCommand(branch, fatherBranch);
+        command = Diff.generateDiffFatherCommand(branch, fatherBranch);
         info = await execCommand(command);
       }
       else {
