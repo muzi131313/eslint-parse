@@ -23,5 +23,6 @@
 - `eslintparse -p -i ./examples/vite-demo -d`: 解析校验的结果 [debug mode]
 
 ## TODO
+- [ ] modify 模式下，变更文件较多时，error 排序后展示
 - [x] 移动分析内容 .temp 目录优先到 node_modules/.temp 目录 [2021.6.29]
 - [x] 优化格式化队列 [2021.6.28]
